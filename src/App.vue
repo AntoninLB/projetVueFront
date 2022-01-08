@@ -1,12 +1,42 @@
 <template>
   <div id="app">
     <div id="nav">
-      <router-link to="/">Home</router-link> |
-      <router-link to="/about">About</router-link>
+      <router-link class="link" to="/">Home</router-link> |
+      <router-link class="link" to="/about">About</router-link> |
+      <router-link class="link" to="/categorie">Categories</router-link> |
+      <router-link class="link" to="/messages">Messages</router-link> |
+      <router-link class="link" to="/login">Login</router-link>
+      <div v-if="isLogged()">
+       | <router-link class="link" to="/mes_messages">Mes messages</router-link>
+       | <router-link @click.native="logoutUser" to="/login">Logout</router-link>
+      </div>
     </div>
     <router-view/>
+    <!-- <list-note /> -->
   </div>
 </template>
+
+<script>
+// import ListNote from './components/ListNote.vue'
+import { logout } from './api/user'
+
+export default {
+  // components: { ListNote },
+  name: 'App',
+  methods: {
+    async logoutUser () {
+      await logout()
+    },
+    isLogged () {
+      const token = localStorage.getItem('usertoken')
+      console.log(token)
+      if (token) {
+        return true
+      }
+    }
+  }
+}
+</script>
 
 <style>
 #app {
@@ -19,6 +49,10 @@
 
 #nav {
   padding: 30px;
+  display: flex;
+  flex-direction: row;
+  justify-content: center;
+  align-items: center;
 }
 
 #nav a {
@@ -28,5 +62,9 @@
 
 #nav a.router-link-exact-active {
   color: #42b983;
+}
+
+.link {
+  margin: 3px;
 }
 </style>

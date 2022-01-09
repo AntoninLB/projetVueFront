@@ -88,18 +88,21 @@ export default {
     }
   },
   async mounted () {
-    this.getUserEmail()
-    this.getUserWithId().then((data) => {
-      data.messages.map(element => {
-        const messageId = element.split('/')[3]
-        getMessage(messageId).then((response) => {
-          this.messages.push(response.data)
-          return response.data
-        })
-      })
-    })
+    this.getMyMessages()
   },
   methods: {
+    getMyMessages () {
+      this.getUserEmail()
+      this.getUserWithId().then((data) => {
+        data.messages.map(element => {
+          const messageId = element.split('/')[3]
+          getMessage(messageId).then((response) => {
+            this.messages.push(response.data)
+            return response.data
+          })
+        })
+      })
+    },
     async getUserWithId () {
       this.userId = await JSON.parse(localStorage.getItem('user'))
 
@@ -117,7 +120,8 @@ export default {
     },
     async supprimerMessage (id) {
       await deleteMessage(id).then(() => {
-        this.actualiseMessages()
+        this.messages = []
+        this.getMyMessages()
       })
     },
     async getUserEmail () {

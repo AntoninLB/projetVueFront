@@ -1,14 +1,15 @@
 <template>
   <div id="app">
     <div id="nav">
-      <router-link class="link" to="/">Home</router-link> |
-      <router-link class="link" to="/about">About</router-link> |
+      <router-link class="link" to="/">Accueil</router-link> |
       <router-link class="link" to="/categorie">Categories</router-link> |
       <router-link class="link" to="/messages">Messages</router-link> |
-      <router-link class="link" to="/login">Login</router-link>
+      <div v-if="!isLogged()">
+        <router-link class="link" to="/login">Connexion</router-link> |
+      </div>
       <div v-if="isLogged()">
-       | <router-link class="link" to="/mes_messages">Mes messages</router-link>
-       | <router-link @click.native="logoutUser" to="/login">Logout</router-link>
+        <router-link class="link" to="/mes_messages">Mes messages</router-link>
+       | <router-link @click.native="logoutUser" to="/login">Deconnexion</router-link>
       </div>
     </div>
     <router-view/>

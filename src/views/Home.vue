@@ -1,19 +1,25 @@
 <template>
   <div class="home">
-    <img alt="Vue logo" src="../assets/logo.png">
-    <p>que souhaitez-vous rechercher ?</p>
-    <div>
-      <label for="searchCategorie">Categorie</label>
-      <input type="checkbox" name="searchCategorie" id="searchCategorie" v-model="selectedCategorie" />
-      <label for="searchCategorie">Message</label>
-      <input type="checkbox" name="searchMessage" id="searchMessage" v-model="selectedMessage" />
-    </div>
-    <div>
-      <label for="libelle">Recherche</label>
-      <input type="text" name="titre" id="titre" v-model="recherche" v-on:keydown="onChangeText" />
+    <h1>que souhaitez-vous rechercher ?</h1>
+
+    <div style="display: flex; justify-content:center;">
+     <div style="display: flex; flex-direction: row;">
+      <div>
+        <label style="color: #6658d3;" for="searchCategorie">Categorie</label>
+        <input type="checkbox" name="searchCategorie" id="searchCategorie" v-model="selectedCategorie" />
+      </div>
+      <div>
+        <label style="color: #6658d3;" for="searchCategorie">Message</label>
+        <input type="checkbox" name="searchMessage" id="searchMessage" v-model="selectedMessage" />
+      </div>
+     </div>
     </div>
 
-    <hr>
+    <div class="input">
+      <input class="input-field" type="text" name="titre" id="titre" v-model="recherche" v-on:keydown="onChangeText" />
+      <label class="input-label"  for="libelle">Recherche</label>
+    </div>
+
     <cardList v-if="categories">
         <cardListItem v-for="categorie in categories" :key="categorie.id">
           <router-link style="text-decoration: none;" :to="{ name:'categorie_message', params: {id: categorie.id} }">
@@ -146,7 +152,6 @@ export default {
     MessageButton,
     divContent
   },
-  // components: { Form, ListDeroulante },
   name: 'Home',
   data: () => {
     return {
@@ -157,16 +162,28 @@ export default {
       selectedMessage: false
     }
   },
+  watch: {
+    selectedCategorie: function (params) {
+      if (params) {
+        this.selectedMessage = false
+        this.messages = {}
+      }
+    },
+    selectedMessage: function (params) {
+      if (params) {
+        this.selectedCategorie = false
+        this.categories = {}
+      }
+    }
+  },
   methods: {
     async searchCat () {
       this.categories = await searchCategorie(this.recherche).then((response) => {
-        console.log(response.data['hydra:member'])
         return response.data['hydra:member']
       })
     },
     async searchMess () {
       this.messages = await searchMessage(this.recherche).then((response) => {
-        console.log(response.data['hydra:member'])
         return response.data['hydra:member']
       })
     },
@@ -179,13 +196,61 @@ export default {
       return newDate
     },
     onChangeText () {
-      console.log(this.recherche)
       if (this.selectedCategorie) {
+        this.selectedMessage = false
         this.searchCat()
       } else {
+        this.selectedCategorie = false
         this.searchMess()
       }
     }
   }
 }
 </script>
+
+<style scoped>
+@import url('https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;700&display=swap');
+
+body {
+font-family: "DM Sans", sans-serif;
+line-height: 1.5;
+background-color: #f1f3fb;
+padding: 0 2rem;
+}
+
+.input {
+  display: flex;
+flex-direction: column-reverse;
+position: relative;
+padding-top: 1.5rem;
+
+}
+  /* input {
+  appearance: none;
+  border-radius: 0;
+  } */
+.input {
+  margin-top: 1.5rem;
+}
+
+.input-label {
+color: #8597a3;
+position: absolute;
+top: 1.5rem;
+transition: .25s ease;
+}
+
+.input-field {
+border: 0;
+z-index: 1;
+background-color: transparent;
+border-bottom: 2px solid #eee;
+font: inherit;
+font-size: 1.125rem;
+padding: .25rem 0;
+}
+.input-label {
+color: #6658d3;
+transform: translateY(-1.5rem);
+}
+</style>

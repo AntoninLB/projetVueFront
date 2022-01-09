@@ -88,27 +88,37 @@ export default {
   },
   methods: {
     async supprimerCategorie (id) {
+      console.log('1')
       await this.categories.forEach(categorie => {
+        console.log('2')
         if (categorie.id === id) {
+          console.log('3')
           if (categorie.messages) {
+            console.log('4')
             const messages = categorie.messages
 
             messages.forEach(message => {
+              console.log('5')
               if (message) {
+                console.log('6')
                 deleteMessage(message.id).then(() => {
                   deleteCategorie(id)
-                  this.actualiseCategories()
+                  console.log('7')
                 })
               }
             })
+          } else {
+            console.log('8')
+            deleteCategorie(id)
           }
         }
       })
+      await this.actualiseCategories()
     },
 
     async actualiseCategories () {
       this.categories = await getCategories().then((response) => {
-        console.log(response)
+        console.log(response.data['hydra:member'])
         return response.data['hydra:member']
       })
     }

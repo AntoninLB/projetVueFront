@@ -82,7 +82,8 @@ export default {
   },
   data () {
     return {
-      messages: null
+      messages: null,
+      categorieName: ''
     }
   },
   async mounted () {
@@ -91,6 +92,7 @@ export default {
   methods: {
     async actualiseMessages () {
       this.messages = await getMessages().then((response) => {
+        console.log(response.data['hydra:member'])
         return response.data['hydra:member']
       })
     },
@@ -106,6 +108,12 @@ export default {
     async supprimerMessage (id) {
       await deleteMessage(id).then(() => {
         this.actualiseMessages()
+      })
+    },
+    async getUserEmail () {
+      this.userEmail = await this.getUserWithId().then((response) => {
+        console.info(response.email)
+        return response.email
       })
     }
 
